@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-# Title:    Move Airtable bases from one workspace to another workspace
-# Date :    2022/06/20
-# Author:   jean-carol.forato@dataiku.com, lyronn.levy@dataiku.com
-# Version:  0.4
+
+# Purpose: 
+# Move Airtable bases from one workspace to another workspace
+# Bases are loaded from a CSV file, that was generated from the Airtable Web UI
+
 import logging
 logging.basicConfig()
 log = logging.getLogger()
@@ -112,7 +113,20 @@ def yield_from_CSV(csv_file_path: Path) -> Generator[Dict[str, str], None, None]
       yield row
 
 
-def main(csv_path: Path, mode: str, target_ws: Optional[str]) -> None:
+def move_bases_from_csv(
+  csv_path: Path, 
+  mode: str, 
+  target_ws: str
+) -> None:
+  """
+  Read a CSV file (exported from Airtable's web UI) listing Aitable Bases, 
+  and depending on the mode, attempt to move each of these tables to or from
+  a target workspace.
+  Args:
+    csv_path: Path. CSV file listing bases to move.
+    mode: str. 'to' or 'from'
+    target_ws: str. Id of the workspace to move to/from.
+  """
   cached_processed = load_cached_processed()
   # bases_to_move = []
   moved_bases = []
@@ -190,4 +204,4 @@ if __name__ == "__main__":
   # from which we'll move the bases (back into their original workspace).
   target_ws = argv[3]
 
-  main(csv_path=input_csv_file, mode=mode, target_ws=target_ws)
+  move_bases_from_csv(csv_path=input_csv_file, mode=mode, target_ws=target_ws)
